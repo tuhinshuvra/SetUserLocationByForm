@@ -9,10 +9,7 @@ import './Address/Address.css';
 
 const UserGEOLocationSetForm = () => {
     const [searchData, setSearchData] = useState(null);
-    const [division, setDivision] = useState(null);
-    const [district, setDistrict] = useState(null);
-    const [thana, setThana] = useState(null);
-    const [union, setUnion] = useState(null);
+    const [searchResult, setSearchResult] = useState(null);
 
     console.log("Search Data : ", searchData);
 
@@ -32,9 +29,7 @@ const UserGEOLocationSetForm = () => {
     };
 
     useEffect(() => {
-        // const map = L.map('map').setView([28.2380, 83.9956], 11);
-        const map = L.map('map').setView([23.7984463, 90.4031033], 12);
-
+        const map = L.map('map').setView([23.7984463, 90.4031033], 13);
         const mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
 
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -43,18 +38,20 @@ const UserGEOLocationSetForm = () => {
         }).addTo(map);
 
         if (searchData) {
-            // map.clearLayers();
-
             // Perform the search based on the searchData
             const { division, district, thana, union } = searchData;
 
             // Example: Center the map on the location specified in searchData
-            const searchLocation = `${thana}, ${district}, ${division}, ${union}`;
+            const searchLocation = `${division}, ${district}, ${thana}, ${union}`;
+
+            console.log("Search Location Data : ", searchLocation)
+
             const geocoder = L.Control.Geocoder.nominatim();
 
             geocoder.geocode(searchLocation, (results) => {
                 if (results && results.length > 0) {
-                    const { center } = results[0];
+                    const { center, name } = results[0];
+                    setSearchResult({ name, latlng: center });
                     map.setView(center);
                     L.marker(center).addTo(map);
                 } else {
@@ -70,73 +67,94 @@ const UserGEOLocationSetForm = () => {
 
 
     return (
-        <div className=' col-md-12 d-md-flex justify-content-between '>
-            <div className=' col-md-6'>
-                <div className='addreddBG p-3'>
-                    <form onSubmit={handleSubmit}>
-                        <div className='row g-3 mb-3'>
-                            <div className='col'>
-                                <label htmlFor="division" className="form-label">Division:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="division"
-                                    name="division"
-                                    aria-describedby="division"
-                                    value={division}
-                                    onChange={(e) => setDivision(e.target.value)}
-                                />
-                            </div>
-                            <div className='col'>
-                                <label htmlFor="district" className="form-label">District:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="district"
-                                    name="district"
-                                    aria-describedby="district"
-                                    value={district}
-                                    onChange={(e) => setDistrict(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className='row g-3 mb-3'>
-                            <div className='col'>
-                                <label htmlFor="thana" className="form-label">SubDistrict/Thana:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="thana"
-                                    name="thana"
-                                    aria-describedby="thana"
-                                    value={thana}
-                                    onChange={(e) => setThana(e.target.value)}
+        <div>
+            <h2 className=' text-center text-primary my-4'>Location Search</h2>
+            <div className=' col-md-12 d-md-flex justify-content-between '>
+                <div className=' col-md-6'>
+                    <div className='addreddBG'>
+                        <form onSubmit={handleSubmit}>
+                            {/* <form> */}
+                            <div className='row g-3 mb-3'>
+                                <div className='col'>
+                                    <label htmlFor="division" className="form-label">Division:</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="division"
+                                        name="division"
+                                        aria-describedby="division"
+                                        // value={division}
+                                        // onChange={(e) => setDivision(e.target.value)}
+                                        onChange={(e) => setSearchData({ ...searchData, division: e.target.value })}
 
-                                />
+                                    />
+                                </div>
+                                <div className='col'>
+                                    <label htmlFor="district" className="form-label">District:</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="district"
+                                        name="district"
+                                        aria-describedby="district"
+                                        // value={district}
+                                        // onChange={(e) => setDistrict(e.target.value)}
+                                        onChange={(e) => setSearchData({ ...searchData, district: e.target.value })}
+
+                                    />
+                                </div>
                             </div>
-                            <div className='col'>
-                                <label htmlFor="union" className="form-label">City Corporation / Union / Municipality:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="union"
-                                    name="union"
-                                    aria-describedby="union"
-                                    value={union}
-                                    onChange={(e) => setUnion(e.target.value)}
+                            <div className='row g-3 mb-3'>
+                                <div className='col'>
+                                    <label htmlFor="thana" className="form-label">SubDistrict/Thana:</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="thana"
+                                        name="thana"
+                                        aria-describedby="thana"
+                                        // value={thana}
+                                        // onChange={(e) => setThana(e.target.value)}
+                                        onChange={(e) => setSearchData({ ...searchData, thana: e.target.value })}
 
-                                />
+
+                                    />
+                                </div>
+                                <div className='col'>
+                                    <label htmlFor="union" className="form-label">City Corporation / Union / Municipality:</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="union"
+                                        name="union"
+                                        aria-describedby="union"
+                                        // value={union}
+                                        // onChange={(e) => setUnion(e.target.value)}
+                                        onChange={(e) => setSearchData({ ...searchData, union: e.target.value })}
+
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <button type="submit" className="btn btn-primary">
-                            Search
-                        </button>
-                    </form>
+                            <button type="submit" className="btn btn-primary">
+                                Search
+                            </button>
+                        </form>
 
+                    </div>
                 </div>
+                <div className=' col-md-6' id="map" />
             </div>
-            <div className=' col-md-6' id="map" />
+
+            {searchResult && (
+                <div className=' text-center'>
+                    <h3 className='text-success fw-bold my-3'>Search Result</h3>
+                    <p>
+                        <b> Location Name: </b> {searchResult.name}</p>
+                    <p> <b>Latitude:</b> {searchResult.latlng.lat}, <b>Longitude: </b>  {searchResult.latlng.lng}</p>
+                </div>
+            )}
+
         </div>
 
     );

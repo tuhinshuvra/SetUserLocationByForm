@@ -9,15 +9,15 @@ import 'leaflet-control-geocoder/dist/Control.Geocoder.js';
 
 const UserGEOLocationSetForm = () => {
     useEffect(() => {
-        const map = L.map('map').setView([28.2380, 83.9956], 11);
+        // const map = L.map('map').setView([28.2380, 83.9956], 11);
+        const map = L.map('map').setView([23.7984463, 90.4031033], 15);
+
         const mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
 
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: 'Leaflet &copy; ' + mapLink + ', contribution',
             maxZoom: 18
         }).addTo(map);
-
-
 
 
         const geocoder = L.Control.geocoder({
@@ -48,7 +48,7 @@ const UserGEOLocationSetForm = () => {
     }, []); // Empty dependency array ensures the useEffect runs only once
 
     return (
-        <div id="map" style={{ width: '100%', height: '100vh' }}></div>
+        <div id="map" style={{ width: '100%', height: '60vh' }}></div>
 
     );
 };

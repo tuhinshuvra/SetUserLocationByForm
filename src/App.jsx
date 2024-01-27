@@ -1,10 +1,9 @@
-import Address from "./Components/Address/Address";
-
+import UserGEOLocationSetForm from "./Components/UserGEOLocationSetForm";
 
 function App() {
   return (
     <div className=" container">
-      <Address></Address>
+      <UserGEOLocationSetForm></UserGEOLocationSetForm>
     </div>
   );
 }
